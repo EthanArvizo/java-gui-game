@@ -9,9 +9,8 @@ public class MyFrame extends JFrame {
         setTitle("JFrame Title");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(true);
-        //setSize(500,500);
         getContentPane().setBackground(new Color(57, 55, 54));
-        //setLayout(null);
+
 
 
         labels = new Labels();
