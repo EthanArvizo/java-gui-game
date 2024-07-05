@@ -1,3 +1,9 @@
+package main.game.gui;
+
+import main.game.model.Item;
+import main.game.model.Room;
+import main.game.Player;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -7,6 +13,8 @@ public class GameGUI {
     private JTextArea displayArea;
     private JButton northButton, southButton, eastButton, westButton;
     private Player player;
+    private JTextArea inventoryArea;
+    private InventoryManager inventoryManager;
 
     public GameGUI() {
         createRooms();
@@ -56,10 +64,22 @@ public class GameGUI {
         eastButton.addActionListener(new DirectionButtonListener("east", player, displayArea));
         westButton.addActionListener(new DirectionButtonListener("west", player, displayArea));
 
+        // Create a panel for inventory display
+        JPanel inventoryPanel = new JPanel();
+        inventoryPanel.setLayout(new BorderLayout());
+
+        // Create inventory display area
+        inventoryArea = new JTextArea("Inventory:\n");
+        inventoryArea.setEditable(false);
+        inventoryPanel.add(new JScrollPane(inventoryArea), BorderLayout.CENTER);
+
         // Add components to the frame
         frame.getContentPane().add(BorderLayout.CENTER, new JScrollPane(displayArea));
         frame.getContentPane().add(BorderLayout.SOUTH, buttonPanel);
 
         frame.setVisible(true); // Make the frame visible
+    }
+    public void addItemToInventory(Item item) {
+        inventoryManager.addItemToInventory(item);
     }
 }

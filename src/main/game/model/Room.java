@@ -1,10 +1,12 @@
+package main.game.model;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class Room {
     // Description of the room
     private String description;
-    // Map to store exits from this room, mapping direction strings to Room objects
+    // Map to store exits from this room, mapping direction strings to main.game.Room objects
     private Map<String, Room> exits;
     // Constructor to create a room with a given description.
     public Room(String description) {
