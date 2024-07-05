@@ -3,35 +3,33 @@ package main.game.gui;
 import main.game.model.Item;
 import main.game.model.Room;
 import main.game.Player;
+import main.game.model.RoomManager;
 
 import javax.swing.*;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class GameGUI {
     // GUI components
     private JFrame frame;
-    private JTextArea displayArea;
+    private JTextPane displayArea;
     private JButton northButton, southButton, eastButton, westButton;
     private Player player;
-    private JTextArea inventoryArea;
+    private JTextPane inventoryArea;
     private InventoryManager inventoryManager;
+    private DisplayManager displayManager;
+    private JPanel displayPanel;
 
     public GameGUI() {
-        createRooms();
+        RoomManager roomManager = new RoomManager();
+        player = new Player(roomManager.getInitialRoom());
+        inventoryManager = new InventoryManager();
+        displayManager = new DisplayManager();
         initializeGUI();
-    }
-    // Creates the rooms and their connections (exits).
-    private void createRooms() {
-        Room room1 = new Room("You are in a small room. There is a door to the north.");
-        Room room2 = new Room("You are in a large hall. There is a door to the south and east.");
-        Room room3 = new Room("You are in a dark cave. There is a door to the west.");
-
-        room1.setExit("north", room2);
-        room2.setExit("south", room1);
-        room2.setExit("east", room3);
-        room3.setExit("west", room2);
-
-        player= new Player(room1);
     }
 
     private void initializeGUI() {
@@ -40,14 +38,23 @@ public class GameGUI {
         frame.setSize(600, 400);
 
         // Create and configure the display area for room descriptions
-        displayArea = new JTextArea();
+        displayArea = new JTextPane();
         displayArea.setEditable(false);
-        displayArea.setLineWrap(true);
-        displayArea.setWrapStyleWord(true);
+        displayArea.setBackground(Color.BLACK);
+
+        // Set up the StyledDocument and center alignment
+        StyledDocument doc = displayArea.getStyledDocument();
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+        StyleConstants.setForeground(center, Color.WHITE); // Set text color to white
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
+
+        // Set the text after setting the alignment
         displayArea.setText(player.getCurrentRoom().getDescription());
+
         // Create a panel for direction buttons
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(2,2));
+        buttonPanel.setLayout(new GridLayout(2, 2));
         // Create direction buttons
         northButton = new JButton("Go North");
         southButton = new JButton("Go South");
@@ -59,27 +66,57 @@ public class GameGUI {
         buttonPanel.add(eastButton);
         buttonPanel.add(westButton);
         // Add action listeners to the buttons
-        northButton.addActionListener(new DirectionButtonListener("north", player, displayArea));
-        southButton.addActionListener(new DirectionButtonListener("south", player, displayArea));
-        eastButton.addActionListener(new DirectionButtonListener("east", player, displayArea));
-        westButton.addActionListener(new DirectionButtonListener("west", player, displayArea));
+        northButton.addActionListener(new DirectionButtonListener("north", player, displayArea, this));
+        southButton.addActionListener(new DirectionButtonListener("south", player, displayArea, this));
+        eastButton.addActionListener(new DirectionButtonListener("east", player, displayArea, this));
+        westButton.addActionListener(new DirectionButtonListener("west", player, displayArea, this));
 
         // Create a panel for inventory display
         JPanel inventoryPanel = new JPanel();
         inventoryPanel.setLayout(new BorderLayout());
 
         // Create inventory display area
-        inventoryArea = new JTextArea("Inventory:\n");
+        inventoryArea = new JTextPane();
         inventoryArea.setEditable(false);
+        inventoryArea.setBackground(Color.BLACK); // Set background color to black for contrast
+        inventoryArea.setForeground(Color.WHITE); // Set text color to white
         inventoryPanel.add(new JScrollPane(inventoryArea), BorderLayout.CENTER);
+
+        // Create display panel and add the initial room's display
+        displayPanel = new JPanel(new BorderLayout());
+        displayPanel.add(displayManager.getDisplayForRoom(player.getCurrentRoom()), BorderLayout.CENTER);
 
         // Add components to the frame
         frame.getContentPane().add(BorderLayout.CENTER, new JScrollPane(displayArea));
         frame.getContentPane().add(BorderLayout.SOUTH, buttonPanel);
+        frame.getContentPane().add(BorderLayout.EAST, inventoryPanel);
 
         frame.setVisible(true); // Make the frame visible
     }
+
     public void addItemToInventory(Item item) {
         inventoryManager.addItemToInventory(item);
+        updateInventoryDisplay();
+    }
+
+    private void updateInventoryDisplay() {
+        StringBuilder inventoryText = new StringBuilder("Inventory:\n");
+        for (Item item : inventoryManager.getItems()) {
+            inventoryText.append(item.getName()).append("\n");
+        }
+        inventoryArea.setText(inventoryText.toString());
+    }
+
+    // Method to update the display panel
+    public void updateDisplayPanel(JPanel newDisplay) {
+        displayPanel.removeAll();
+        displayPanel.add(newDisplay, BorderLayout.CENTER);
+        displayPanel.revalidate();
+        displayPanel.repaint();
+    }
+
+    // Getter for DisplayManager
+    public DisplayManager getDisplayManager() {
+        return displayManager;
     }
 }
