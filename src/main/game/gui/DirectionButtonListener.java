@@ -31,8 +31,7 @@ public class DirectionButtonListener implements ActionListener {
         this.gameGUI = gameGUI;
     }
 
-    public DirectionButtonListener() {
-    }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -49,10 +48,10 @@ public class DirectionButtonListener implements ActionListener {
         }
     }
 
-    private void updateDisplay(String text) {
+    private void updateDisplay(String message) {
         // Update the text area with the current room description
         SwingUtilities.invokeLater(() -> {
-            displayArea.setText(player.getCurrentRoom().getDescription());
+            displayArea.setText(message);
 
             // Reapply center alignment after setting new text
             StyledDocument doc = displayArea.getStyledDocument();

@@ -55,6 +55,7 @@ public class GameGUI {
         // Create a panel for direction buttons
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(2, 2));
+
         // Create direction buttons
         northButton = new JButton("Go North");
         southButton = new JButton("Go South");
@@ -91,7 +92,9 @@ public class GameGUI {
         frame.getContentPane().add(BorderLayout.SOUTH, buttonPanel);
         frame.getContentPane().add(BorderLayout.EAST, inventoryPanel);
 
-        frame.setVisible(true); // Make the frame visible
+      // Adjusts frame size based on components
+        frame.setLocationRelativeTo(null); // Centers the frame on the screen
+        frame.setVisible(true);
     }
 
     public void addItemToInventory(Item item) {
@@ -107,6 +110,11 @@ public class GameGUI {
         inventoryArea.setText(inventoryText.toString());
     }
 
+    // Getter for displayManager
+    public DisplayManager getDisplayManager() {
+        return displayManager;
+    }
+
     // Method to update the display panel
     public void updateDisplayPanel(JPanel newDisplay) {
         displayPanel.removeAll();
@@ -115,8 +123,5 @@ public class GameGUI {
         displayPanel.repaint();
     }
 
-    // Getter for DisplayManager
-    public DisplayManager getDisplayManager() {
-        return displayManager;
-    }
+
 }
