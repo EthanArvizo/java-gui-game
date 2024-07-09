@@ -3,6 +3,7 @@ package main.game.model;
 public class RoomManager {
     private Room initialRoom;
 
+
     public RoomManager() {
         createRooms();
     }

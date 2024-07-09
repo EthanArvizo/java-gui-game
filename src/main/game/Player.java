@@ -1,38 +1,24 @@
 package main.game;
 
-import main.game.model.Item;
 import main.game.model.Room;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Player {
     private Room currentRoom;
-    private List<Item> inventory;
 
-    public Player(Room startingRoom) {
-        this.currentRoom = startingRoom;
-        this.inventory = new ArrayList<>();
+    public Player(Room initialRoom) {
+        this.currentRoom = initialRoom;
     }
 
     public Room getCurrentRoom() {
         return currentRoom;
     }
 
-    public void setCurrentRoom(Room room) {
-        this.currentRoom = room;
+    public void move(String direction) {
+        Room nextRoom = currentRoom.getExit(direction);
+        if (nextRoom != null) {
+            currentRoom = nextRoom;
+        } else {
+            System.out.println("You can't move in that direction.");
+        }
     }
-
-    public void addItemToInventory(Item item) {
-        inventory.add(item);
-    }
-
-    public void removeItemFromInventory(Item item) {
-        inventory.remove(item);
-    }
-
-    public List<Item> getInventory() {
-        return inventory;
-    }
-
 }

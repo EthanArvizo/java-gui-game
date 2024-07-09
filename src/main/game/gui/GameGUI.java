@@ -1,7 +1,5 @@
 package main.game.gui;
 
-import main.game.model.Item;
-import main.game.model.Room;
 import main.game.Player;
 import main.game.model.RoomManager;
 
@@ -19,15 +17,12 @@ public class GameGUI {
     private JTextPane displayArea;
     private JButton northButton, southButton, eastButton, westButton;
     private Player player;
-    private JTextPane inventoryArea;
-    private InventoryManager inventoryManager;
     private DisplayManager displayManager;
     private JPanel displayPanel;
 
     public GameGUI() {
         RoomManager roomManager = new RoomManager();
         player = new Player(roomManager.getInitialRoom());
-        inventoryManager = new InventoryManager();
         displayManager = new DisplayManager();
         initializeGUI();
     }
@@ -72,42 +67,18 @@ public class GameGUI {
         eastButton.addActionListener(new DirectionButtonListener("east", player, displayArea, this));
         westButton.addActionListener(new DirectionButtonListener("west", player, displayArea, this));
 
-        // Create a panel for inventory display
-        JPanel inventoryPanel = new JPanel();
-        inventoryPanel.setLayout(new BorderLayout());
-
-        // Create inventory display area
-        inventoryArea = new JTextPane();
-        inventoryArea.setEditable(false);
-        inventoryArea.setBackground(Color.BLACK); // Set background color to black for contrast
-        inventoryArea.setForeground(Color.WHITE); // Set text color to white
-        inventoryPanel.add(new JScrollPane(inventoryArea), BorderLayout.CENTER);
-
         // Create display panel and add the initial room's display
         displayPanel = new JPanel(new BorderLayout());
         displayPanel.add(displayManager.getDisplayForRoom(player.getCurrentRoom()), BorderLayout.CENTER);
 
         // Add components to the frame
-        frame.getContentPane().add(BorderLayout.CENTER, new JScrollPane(displayArea));
+        frame.getContentPane().add(BorderLayout.CENTER, displayPanel); // Changed this line
         frame.getContentPane().add(BorderLayout.SOUTH, buttonPanel);
-        frame.getContentPane().add(BorderLayout.EAST, inventoryPanel);
+        frame.getContentPane().add(BorderLayout.NORTH, new JScrollPane(displayArea));
 
-      // Adjusts frame size based on components
+        // Adjust frame size based on components
         frame.setLocationRelativeTo(null); // Centers the frame on the screen
         frame.setVisible(true);
-    }
-
-    public void addItemToInventory(Item item) {
-        inventoryManager.addItemToInventory(item);
-        updateInventoryDisplay();
-    }
-
-    private void updateInventoryDisplay() {
-        StringBuilder inventoryText = new StringBuilder("Inventory:\n");
-        for (Item item : inventoryManager.getItems()) {
-            inventoryText.append(item.getName()).append("\n");
-        }
-        inventoryArea.setText(inventoryText.toString());
     }
 
     // Getter for displayManager
@@ -122,6 +93,4 @@ public class GameGUI {
         displayPanel.revalidate();
         displayPanel.repaint();
     }
-
-
 }
