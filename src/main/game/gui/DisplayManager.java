@@ -17,9 +17,9 @@ public class DisplayManager {
 
     public DisplayManager() {
         try {
-            smallRoomImage = ImageIO.read(new File("src/main/game/gui/displays/backgrounds/med_room.jpg"));
+            smallRoomImage = ImageIO.read(new File("src/main/game/gui/displays/backgrounds/med_room_3.jpg"));
             largeHallImage = ImageIO.read(new File("src/main/game/gui/displays/backgrounds/med_hall.jpg"));
-            darkCaveImage = ImageIO.read(new File("src/main/game/gui/displays/backgrounds/med_cave.jpg"));
+            darkCaveImage = ImageIO.read(new File("src/main/game/gui/displays/backgrounds/dark_cave_door.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -13,12 +13,13 @@ public class Player {
         return currentRoom;
     }
 
-    public void move(String direction) {
+    public boolean move(String direction) {
         Room nextRoom = currentRoom.getExit(direction);
         if (nextRoom != null) {
             currentRoom = nextRoom;
+            return true;
         } else {
-            System.out.println("You can't move in that direction.");
+            return false;
         }
     }
 }
