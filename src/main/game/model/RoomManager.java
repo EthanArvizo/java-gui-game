@@ -18,6 +18,9 @@ public class RoomManager {
         room2.setExit("east", room3);
         room3.setExit("west", room2);
 
+        room1.addMonster(new Monster("Goblin", "A small, green goblin is here."));
+        room3.addMonster(new Monster("Troll", "A large, menacing troll is blocking the way."));
+
         initialRoom = room1;
     }
 
