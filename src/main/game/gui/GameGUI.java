@@ -109,21 +109,22 @@ public class GameGUI {
         displayPanel.add(newDisplay, BorderLayout.CENTER);
         displayPanel.revalidate();
         displayPanel.repaint();
+        updateDisplayArea();
     }
 
     // Method to update the display area with room description and monster information
     public void updateDisplayArea() {
-        StringBuilder displayText = new StringBuilder(player.getCurrentRoom().getDescription());
+        String displayText = player.getCurrentRoom().getDescription();
         List<Monster> monsters = player.getCurrentRoom().getMonsters();
 
         if (!monsters.isEmpty()) {
-            displayText.append("\nMonsters in this room:\n");
+            displayText += "\nMonsters in this room:\n";
             for (Monster monster : monsters) {
-                displayText.append(monster.getName()).append(": ").append(monster.getDescription()).append(" (Health: ").append(monster.getHealth()).append(")\n");
+                displayText += monster.getName() + ": " + monster.getDescription() + " (Health: " + monster.getHealth() + ")\n";
             }
         }
 
-        displayArea.setText(displayText.toString());
+        displayArea.setText(displayText);
     }
 
 

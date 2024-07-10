@@ -21,6 +21,7 @@ public class AttackButtonListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
         List<Monster> monsters = player.getCurrentRoom().getMonsters();
         if (!monsters.isEmpty()) {
             Monster monster = monsters.get(0); // Attack the first monster in the room
