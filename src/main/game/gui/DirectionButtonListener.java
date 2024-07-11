@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 public class DirectionButtonListener implements ActionListener {
     private String direction;
     private Player player;
@@ -20,15 +23,10 @@ public class DirectionButtonListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         boolean moved = player.move(direction);
-
         if (moved) {
-            displayArea.setText(player.getCurrentRoom().getDescription());
+            gameGUI.updateDisplayPanel(gameGUI.getDisplayManager().getDisplayForRoom(player.getCurrentRoom()));
         } else {
-            displayArea.setText(player.getCurrentRoom().getDescription()+ "\nYou can't move "+ direction + ".");
+            gameGUI.updateButtonStates(); // Update button states even if the move fails
         }
-
-        // Update the display panel with the new room's background
-        JPanel newDisplay = gameGUI.getDisplayManager().getDisplayForRoom(player.getCurrentRoom());
-        gameGUI.updateDisplayPanel(newDisplay);
     }
 }

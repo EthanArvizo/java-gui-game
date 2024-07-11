@@ -3,6 +3,7 @@ package main.game.gui;
 import main.game.Player;
 import main.game.model.Monster;
 import main.game.model.RoomManager;
+
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -25,15 +26,17 @@ public class GameGUI {
         player = new Player(roomManager.getInitialRoom());
         displayManager = new DisplayManager();
         initializeGUI();
+        updateButtonStates(); // Initialize button states after GUI is set up
     }
 
     private void initializeGUI() {
         setupFrame();
         setupDisplayArea();
-        buttonPanel = setupButtonPanel();
+        setupButtonPanel();
         setupDisplayPanel();
         addComponentsToFrame();
         frame.setVisible(true);
+        updateDisplayArea(); // Update display area after frame is visible
     }
 
     private void setupFrame() {
@@ -54,37 +57,45 @@ public class GameGUI {
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
         StyleConstants.setForeground(center, Color.WHITE); // Set text color to white
         doc.setParagraphAttributes(0, doc.getLength(), center, false);
-
-        // Set the text after setting the alignment
-        updateDisplayArea();
     }
 
-    private JPanel setupButtonPanel() {
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(2, 3)); // Adjusted layout to include attack button
+    private void setupButtonPanel() {
+        buttonPanel = new JPanel(new BorderLayout()); // Main panel to hold directional and attack button panels
 
-        // Create direction buttons
+        // Panel for directional buttons
+        JPanel directionalPanel = new JPanel(new GridLayout(2, 2));
         northButton = new JButton("Go North");
         southButton = new JButton("Go South");
         eastButton = new JButton("Go East");
         westButton = new JButton("Go West");
+        directionalPanel.add(northButton);
+        directionalPanel.add(southButton);
+        directionalPanel.add(eastButton);
+        directionalPanel.add(westButton);
+
+        // Panel for attack button
+        JPanel attackPanel = new JPanel();
         attackButton = new JButton("Attack");
+        attackButton.setBackground(Color.RED); // Example: Set background color to red
+        attackButton.setForeground(Color.WHITE); // Set text color to white
+        attackButton.setFont(new Font("Arial", Font.BOLD, 14)); // Set font and style
+        attackPanel.add(attackButton);
 
-        // Add buttons to the panel
-        buttonPanel.add(northButton);
-        buttonPanel.add(southButton);
-        buttonPanel.add(eastButton);
-        buttonPanel.add(westButton);
-        buttonPanel.add(attackButton);
+        // Add directional and attack panels to the main button panel
+        buttonPanel.add(directionalPanel, BorderLayout.CENTER);
+        buttonPanel.add(attackPanel, BorderLayout.SOUTH);
 
-        // Add action listeners to the buttons
+        // Add action listeners to the directional buttons
         northButton.addActionListener(new DirectionButtonListener("north", player, displayArea, this));
         southButton.addActionListener(new DirectionButtonListener("south", player, displayArea, this));
         eastButton.addActionListener(new DirectionButtonListener("east", player, displayArea, this));
         westButton.addActionListener(new DirectionButtonListener("west", player, displayArea, this));
+
+        // Add action listener to the attack button
         attackButton.addActionListener(new AttackButtonListener(player, displayArea, this));
 
-        return buttonPanel;
+        // Add button panel to the frame
+        frame.getContentPane().add(BorderLayout.SOUTH, buttonPanel);
     }
 
     private void setupDisplayPanel() {
@@ -98,18 +109,25 @@ public class GameGUI {
         frame.getContentPane().add(BorderLayout.NORTH, new JScrollPane(displayArea));
     }
 
-    // Getter for displayManager
-    public DisplayManager getDisplayManager() {
-        return displayManager;
+    // Method to update the button states based on the current room and its exits
+    void updateButtonStates() {
+        northButton.setEnabled(player.getCurrentRoom().getExit("north") != null);
+        southButton.setEnabled(player.getCurrentRoom().getExit("south") != null);
+        eastButton.setEnabled(player.getCurrentRoom().getExit("east") != null);
+        westButton.setEnabled(player.getCurrentRoom().getExit("west") != null);
+
+        // Enable the attack button only if there are monsters in the room
+        attackButton.setEnabled(!player.getCurrentRoom().getMonsters().isEmpty());
     }
 
-    // Method to update the display panel
+    // Method to update the display panel and button states
     public void updateDisplayPanel(JPanel newDisplay) {
         displayPanel.removeAll();
         displayPanel.add(newDisplay, BorderLayout.CENTER);
         displayPanel.revalidate();
         displayPanel.repaint();
         updateDisplayArea();
+        updateButtonStates();
     }
 
     // Method to update the display area with room description and monster information
@@ -121,31 +139,17 @@ public class GameGUI {
             displayText += "\nMonsters in this room:\n";
             for (Monster monster : monsters) {
                 displayText += monster.getName() + ": " + monster.getDescription() + " (Health: " + monster.getHealth() + ")\n";
+                if (monster.getHealth() <= 0) {
+                    displayText = player.getCurrentRoom().getDescription() + "\n\nThe monster in this room has been defeated.";
+                }
             }
         }
-
         displayArea.setText(displayText);
     }
 
-
-    // Add getters for the buttons to be used in AttackButtonListener
-    public JButton getNorthButton() {
-        return northButton;
+    // Getter for displayManager
+    public DisplayManager getDisplayManager() {
+        return displayManager;
     }
 
-    public JButton getSouthButton() {
-        return southButton;
-    }
-
-    public JButton getEastButton() {
-        return eastButton;
-    }
-
-    public JButton getWestButton() {
-        return westButton;
-    }
-
-    public JButton getAttackButton() {
-        return attackButton;
-    }
 }
