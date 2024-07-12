@@ -63,7 +63,7 @@ public class GameGUI {
             for (var monster : monsters) {
                 displayText += monster.getName() + ": " + monster.getDescription() + " (Health: " + monster.getHealth() + ")\n";
                 if (monster.getHealth() <= 0) {
-                    displayText = player.getCurrentRoom().getDescription()+ "\n\nThe monster in this has been defeated.";
+                    displayText = player.getCurrentRoom().getDescription()+ "\n\nThe monster in this area has been defeated.";
                 }
             }
         }

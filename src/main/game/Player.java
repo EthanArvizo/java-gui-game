@@ -31,15 +31,16 @@ public class Player {
             // Check for monsters in the room and play the appropriate sound
             ArrayList<Monster> monstersInRoom = nextRoom.getMonsters();
             if (!monstersInRoom.isEmpty()) {
-                // Assuming you want to work with the first monster in the list
+
                 Monster monster = monstersInRoom.get(0);
-                if (monster.getName().equalsIgnoreCase("Goblin")) {
-                    soundManager.playGoblinSound();
-                } else if (monster.getName().equalsIgnoreCase("Troll")) {
-                    soundManager.playTrollSound();
+                if (monster.getHealth() > 0) {
+                    if (monster.getName().equalsIgnoreCase("Troll")) {
+                        soundManager.playTrollSound();
+                    } else if (monster.getName().equalsIgnoreCase("Goblin")) {
+                        soundManager.playGoblinSound();
+                    }
                 }
             }
-
             return true;
         } else {
             return false;
